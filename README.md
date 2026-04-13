@@ -9,3 +9,5 @@ Este projeto consiste em uma API REST básica utilizando **Spring Boot 3** e **J
 
 ## Como testar
 Após rodar a aplicação, acesse: `http://localhost:8080/status`
+
+*Projeto em desenvolvimento para a disciplina de DevOps.*
