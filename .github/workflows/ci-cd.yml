@@ -26,3 +26,21 @@ jobs:
     steps:
       - name: Symbolic Deploy
         run: echo "Simulando o Deploy da aplicação..."
+
+  alertas:
+    needs: [build, deploy]
+    runs-on: ubuntu-latest
+    if: always() # Garante que avise o Discord mesmo se o build falhar
+    steps:
+      - name: Notificação para o Discord
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: ${{ contains(needs.*.result, 'failure') && 'error' || 'info' }}
+          details: O Workflow de CI/CD foi finalizado!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          text: |
+            **Repositório:** ${{ github.repository }}
+            **Evento:** ${{ github.event_name }}
+            **Status Final:** ${{ contains(needs.*.result, 'failure') && '❌ FALHA' || '✅ SUCESSO' }}
+            **Commit:** ${{ github.event.head_commit.message }}
+            **Link da Execução:** https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
